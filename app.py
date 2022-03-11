@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response, request
+from flask import Flask, jsonify, make_response, render_template, request
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
@@ -125,6 +125,23 @@ def delete_router(current_user, sapid):
     router_data.isdeleted = 1
     db.session.commit()
     return jsonify({'message': 'Router entry deleted'})
+
+@app.route('/routers/<sapid>', methods=['PUT'])
+@token_required
+def update_router(current_user, sapid):
+    data = request.get_json() 
+    router_data = router_details.query.filter_by(sap_id=sapid, user_id=current_user.id).first()
+    if not router_data:
+        return jsonify({'message': 'Router does not exist'})
+    router_data.hostname = data['hostname']
+    router_data.loopback = data['loopback']
+    router_data.mac_address = data['macaddr']
+    db.session.commit()
+    return jsonify({'message': 'Router entry Updated'})
+
+@app.route("/")
+def index():
+  return render_template("index.html")
 
 
 if  __name__ == '__main__':  
