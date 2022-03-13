@@ -116,25 +116,24 @@ def get_routers(current_user):
 
     return jsonify({'list_of_routers' : output})
 
-@app.route('/routers/<sapid>', methods=['DELETE'])
+@app.route('/routers/<loopback>', methods=['DELETE'])
 @token_required
-def delete_router(current_user, sapid):
-    router_data = router_details.query.filter_by(sap_id=sapid, user_id=current_user.id).first()
+def delete_router(current_user, loopback):
+    router_data = router_details.query.filter_by(loopback=loopback, isdeleted=None, user_id=current_user.id).first()
     if not router_data:
         return jsonify({'message': 'Router does not exist'})
     router_data.isdeleted = 1
     db.session.commit()
     return jsonify({'message': 'Router entry deleted'})
 
-@app.route('/routers/<sapid>', methods=['PUT'])
+@app.route('/routers/<loopback>', methods=['PUT'])
 @token_required
-def update_router(current_user, sapid):
+def update_router(current_user, loopback):
     data = request.get_json() 
-    router_data = router_details.query.filter_by(sap_id=sapid, user_id=current_user.id).first()
+    router_data = router_details.query.filter_by(loopback=loopback, isdeleted=None, user_id=current_user.id).first()
     if not router_data:
         return jsonify({'message': 'Router does not exist'})
-    router_data.hostname = data['hostname']
-    router_data.loopback = data['loopback']
+    router_data.hostname = data['hostname']    
     router_data.mac_address = data['macaddr']
     db.session.commit()
     return jsonify({'message': 'Router entry Updated'})
