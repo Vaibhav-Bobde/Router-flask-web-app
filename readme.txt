@@ -44,3 +44,23 @@ Activate virtual environment by running the following command:
 	
 install the python packages in the virtual env using the following command:
 	pip install -r '../requirements.txt'
+
+===================================================================================
+
+--> sshclient.py
+
+The above file is for runnig a command on the remote server using paramiko.
+Before running the above sshclient.py, we need to setup or make sure that ssh service is running on the remote server.
+For this, I installed ubuntu using WSL on my windows 10 machine.
+After that I performed following steps to start ssh service:
+	a) Run the command:  sudo ssh-keygen -A
+	b) Edit the ssh config using the command: sudo nano /etc/ssh/sshd_config
+		i) After running the above command, make sure 'PasswordAuthentication yes' is there in the sshd_config file, or else change it.
+		ii)Add the line 'AllowUsers <username>'  to the bottom of the sshd_config file.(Please make sure to replace the <username> with the actual username)
+	c) Start the ssh service using the command: sudo service ssh start
+	d) If the ssh service is already running then run the command: sudo service ssh --full-restart
+	e) Check whether the service is running using the command: service ssh status
+
+Create the file testfile.txt on the remote server to fetch it using SFTP protocol using paramiko
+
+Now, run the sshclient.py file to runn the command on the remote server 
